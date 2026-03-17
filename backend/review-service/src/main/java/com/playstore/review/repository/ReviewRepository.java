@@ -17,4 +17,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Double findAvgRatingByAppId(@Param("appId") Long appId);
 
     long countByAppId(Long appId);
+    boolean existsByAppIdAndUserId(Long appId, Long userId);
 }

@@ -48,6 +48,7 @@ export default function AppDetailPage() {
   const [dlActive, setDlActive] = useState(false)
   const [dlPct, setDlPct] = useState(0)
   const [starPick, setStarPick] = useState(0)
+  const alreadyReviewed = reviews.some(r => r.userEmail === user?.email)
 
   useEffect(() => {
     const load = async () => {
@@ -178,32 +179,42 @@ const doReview = async (values, { resetForm, setSubmitting }) => {
               <p style={{ fontSize:13, fontWeight:600, color:'var(--text-1)', marginBottom:12 }}>About</p>
               <p style={{ fontSize:13.5, color:'var(--text-2)', lineHeight:1.75 }}>{app.description||'No description.'}</p>
             </div>
-
-            <div className="card" style={{ padding:24 }}>
-              <p style={{ fontSize:13, fontWeight:600, color:'var(--text-1)', marginBottom:16 }}>Write a Review</p>
-              <Formik initialValues={{ rating:starPick, comment:'' }} enableReinitialize validationSchema={schema} onSubmit={doReview}>
-                {({ isSubmitting, values, setFieldValue }) => (
-                  <Form style={{ display:'flex', flexDirection:'column', gap:14 }}>
-                    <div>
-                      <label className="lbl">Rating</label>
-                      <Stars rating={values.rating} interactive size={20}
-                        onRate={r=>{ setFieldValue('rating',r); setStarPick(r) }}/>
-                      <FieldErr name="rating"/>
-                    </div>
-                    <div>
-                      <label className="lbl">Comment</label>
-                      <Field as="textarea" name="comment" rows={3}
-                        className="inp" style={{ resize:'vertical' }}
-                        placeholder="Share your experience…"/>
-                      <FieldErr name="comment"/>
-                    </div>
-                    <button type="submit" className="btn btn-primary" style={{ alignSelf:'flex-start' }} disabled={isSubmitting}>
-                      {isSubmitting ? <Spinner size={14} color="#fff"/> : 'Post Review'}
-                    </button>
-                  </Form>
-                )}
-              </Formik>
-            </div>
+            
+            {alreadyReviewed ? (
+  <div className="card" style={{ padding:24, textAlign:'center' }}>
+    <div style={{ width:40, height:40, borderRadius:'50%', background:'var(--green-lt)', border:'1px solid rgba(22,163,74,0.2)', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 12px' }}>
+      <span style={{ fontSize:18, color:'var(--green)' }}>✓</span>
+    </div>
+    <p style={{ fontWeight:600, fontSize:13.5, color:'var(--text-1)', marginBottom:4 }}>Review submitted</p>
+    <p style={{ fontSize:12.5, color:'var(--text-3)', lineHeight:1.6 }}>You have already reviewed this app.</p>
+  </div>
+) : (
+  <div className="card" style={{ padding:24 }}>
+    <p style={{ fontSize:13, fontWeight:600, color:'var(--text-1)', marginBottom:16 }}>Write a Review</p>
+    <Formik initialValues={{ rating:starPick, comment:'' }} enableReinitialize validationSchema={schema} onSubmit={doReview}>
+      {({ isSubmitting, values, setFieldValue }) => (
+        <Form style={{ display:'flex', flexDirection:'column', gap:14 }}>
+          <div>
+            <label className="lbl">Rating</label>
+            <Stars rating={values.rating} interactive size={20}
+              onRate={r=>{ setFieldValue('rating',r); setStarPick(r) }}/>
+            <FieldErr name="rating"/>
+          </div>
+          <div>
+            <label className="lbl">Comment</label>
+            <Field as="textarea" name="comment" rows={3}
+              className="inp" style={{ resize:'vertical' }}
+              placeholder="Share your experience…"/>
+            <FieldErr name="comment"/>
+          </div>
+          <button type="submit" className="btn btn-primary" style={{ alignSelf:'flex-start' }} disabled={isSubmitting}>
+            {isSubmitting ? <Spinner size={14} color="#fff"/> : 'Post Review'}
+          </button>
+        </Form>
+      )}
+    </Formik>
+  </div>
+)}
           </div>
 
           {/* Right: Reviews */}

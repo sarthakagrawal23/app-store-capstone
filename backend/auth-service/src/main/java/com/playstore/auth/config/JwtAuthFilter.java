@@ -15,6 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+// Validates JWT token and sets authentication in SecurityContext
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 

@@ -126,5 +126,4 @@ Open http://localhost:3000
 ## Notes
 
 - JWT secret must be **identical** across auth-service, app-service, review-service
-- Categories are auto-seeded by app-service on startup
 - The Vite proxy routes `/api/*` to `http://localhost:8080` during development

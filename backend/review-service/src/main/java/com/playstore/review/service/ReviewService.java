@@ -14,16 +14,34 @@ public class ReviewService {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    public Review addReview(Long appId, Long userId, ReviewRequest req) {
-        Review review = new Review();
-        review.setAppId(appId);
-        review.setUserId(userId);
-        review.setUserName(req.getUserName());
-        review.setUserEmail(req.getUserEmail());
-        review.setComment(req.getComment());
-        review.setRating(req.getRating());
-        return reviewRepository.save(review);
+//    public Review addReview(Long appId, Long userId, ReviewRequest req) {
+//        Review review = new Review();
+//        review.setAppId(appId);
+//        review.setUserId(userId);
+//        review.setUserName(req.getUserName());
+//        review.setUserEmail(req.getUserEmail());
+//        review.setComment(req.getComment());
+//        review.setRating(req.getRating());
+//        return reviewRepository.save(review);
+//    }
+public Review addReview(Long appId, Long userId, ReviewRequest req) {
+    // Check if user already reviewed this app
+    boolean alreadyReviewed = reviewRepository
+            .existsByAppIdAndUserId(appId, userId);
+
+    if (alreadyReviewed) {
+        throw new RuntimeException("You have already reviewed this app");
     }
+
+    Review review = new Review();
+    review.setAppId(appId);
+    review.setUserId(userId);
+    review.setUserName(req.getUserName());
+    review.setUserEmail(req.getUserEmail());
+    review.setComment(req.getComment());
+    review.setRating(req.getRating());
+    return reviewRepository.save(review);
+}
 
     public List<Review> getReviewsByApp(Long appId) {
         return reviewRepository.findByAppIdOrderByCreatedAtDesc(appId);
